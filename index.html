@@ -3,6 +3,7 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <script src="jquery.timeago.js" type="text/javascript"></script>
   </head>
   <body>
     <script>
@@ -34,7 +35,8 @@
         $message.appendTo($post);
 
         var $timestamp = $("<p></p>");
-        $timestamp.text(tweet.created_at.toLocaleString());
+        $timestamp.text(jQuery.timeago(tweet.created_at));
+        $timestamp.addClass("timeago");
         $timestamp.appendTo($post);
 
         // CSS for the post to make it resemble twitter
@@ -65,7 +67,7 @@
             showTweet(i);
             tweetCount = i;
           }
-        }, 1000);
+        }, 6000);
       };
 
       // passes the clicked user as an argument which will grab the array of tweets by only the user passed. Uses the same method as the showTweet() function to display the tweets. 
@@ -96,7 +98,7 @@
             $message.appendTo($post);
 
             var $timestamp = $("<p></p>");
-            $timestamp.text(tweet.created_at.toLocaleString());
+            $timestamp.text(jQuery.timeago(tweet.created_at));
             $timestamp.appendTo($post);
 
             // CSS for the post to make it resemble twitter
