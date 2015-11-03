@@ -1,4 +1,3 @@
-v
 <!DOCTYPE html>
 <html>
   <head>
@@ -7,8 +6,10 @@ v
   </head>
   <body>
     <script>
-      var tweetCount = streams.home.length -1;
+      var tweetCount = streams.home.length -1; //initial value 
       var index = tweetCount;
+      var interval;
+      var timelineView = false;
       var $body = $('body');
       $body.html('');
       $body.css({'background-color':'#DDFFFF'})
@@ -16,29 +17,36 @@ v
 
       var showTweet = function(index){
         var tweet = streams.home[index];
+
         var $post = $("<div></div>");
-        $post.addClass('posted-'+tweet.user);
+        $post.addClass('div-'+tweet.user);
         $post.appendTo($body);
-        $('<br>').appendTo($body);
+
+        $('<br />').appendTo($body);
+
         var $user = $("<p></p>");
-        $user.attr('id',"'"+tweet.user+"'");
+        $user.addClass(tweet.user);
         $user.text("@"+tweet.user);
         $user.appendTo($post);
+
         var $message = $("<h2></h2>");
         $message.text(tweet.message);
         $message.appendTo($post);
+
         var $timestamp = $("<p></p>");
         $timestamp.text(tweet.created_at.toLocaleString());
         $timestamp.appendTo($post);
 
-
+        // CSS for the post to make it resemble twitter
         $post.css({'border-radius': '25px',
                    'border': '10px solid #80CCFF',
                    'padding': '20px', 
                    'width': '500px',
-                   'height': '100px'
+                   'height': '125px'
                    });
         $('<br />').prependTo($body);
+
+        //make sure all new posts are loaded at the top
         $post.prependTo($body);
 
       }
@@ -52,23 +60,108 @@ v
       }
 
       var update = function() {
-        setInterval(function() {
+        interval  =setInterval(function() {
           for (var i = tweetCount + 1; i < streams.home.length - 1; i++) {
             showTweet(i);
             tweetCount = i;
           }
-        }, 5000);
+        }, 1000);
       };
 
+      // passes the clicked user as an argument which will grab the array of tweets by only the user passed. Uses the same method as the showTweet() function to display the tweets. 
       var timeline = function (user) {
+        if(timelineView == false) {
 
+          $('div').remove();
+          clearInterval(interval);
+          tweetArray = streams.users[user];
+          var tweetCount = tweetArray.length-1;
+          var index = tweetCount;
+          while(index >=0){
+
+            var tweet = tweetArray[index];
+            var $post = $("<div></div>");
+            $post.addClass('div-'+tweet.user);
+            $post.appendTo($body);
+
+            $('<br />').appendTo($body);
+
+            var $user = $("<p></p>");
+            $user.addClass(tweet.user);
+            $user.text("@"+tweet.user);
+            $user.appendTo($post);
+
+            var $message = $("<h2></h2>");
+            $message.text(tweet.message);
+            $message.appendTo($post);
+
+            var $timestamp = $("<p></p>");
+            $timestamp.text(tweet.created_at.toLocaleString());
+            $timestamp.appendTo($post);
+
+            // CSS for the post to make it resemble twitter
+            $post.css({'border-radius': '25px',
+                       'border': '10px solid #80CCFF',
+                       'padding': '20px', 
+                       'width': '500px',
+                       'height': '125px'
+                       });
+            $('<br />').prependTo($body);
+
+            //make sure all new posts are loaded at the top
+            $post.prependTo($body);
+              index -=1;
+            timelineView = true;
+
+          }
+        }
+        var $button = $('<div></div>');
+        $button.addClass('exit');
+        $button.text("Back to Full Feed");
+        $button.prependTo($body);
       }
 
       $(document).ready(function(){
         tweets();
         update();
 
-      })
+        $("body").on('click', ".shawndrost", function(){
+          timeline("shawndrost");
+        });
+
+        $("body").on('click', ".sharksforcheap", function(){
+          timeline("sharksforcheap");
+        });
+
+        $("body").on('click', ".mracus", function(){
+          timeline("mracus");
+        });
+
+        $("body").on('click', ".douglascalhoun", function(){
+          timeline("douglascalhoun");
+        });
+
+        $body.on('click', ".exit", function() {
+          $("div").remove();
+          timelineView = false;
+          tweets();
+          update();
+        });
+
+      // }).on('click', ".shawndrost", function() {
+      //   timeline(".div-sharksforcheap", ".div-mracus", ".div-douglascalhoun");
+      // }).on('click', ".sharksforcheap", function() {
+      //   timeline(".div-shawndrost", ".div-mracus", ".div-douglascalhoun");
+      // }).on('click', ".mracus", function() {
+      //   timeline(".div-sharksforcheap", ".div-shawndrost", ".div-douglascalhoun");  
+      // }).on('click', ".douglascalhoun", function() {
+      //   timeline(".div-sharksforcheap", ".div-mracus", ".div-shawndrost");   
+      // }).on('click', ".exit", function() {
+      //   $("div").remove();
+      //   timelineView = false;
+      //   tweets();
+      //   update();
+      });
 
     </script>
   </body>
