@@ -1,3 +1,4 @@
+v
 <!DOCTYPE html>
 <html>
   <head>
@@ -6,21 +7,68 @@
   </head>
   <body>
     <script>
+      var tweetCount = streams.home.length -1;
+      var index = tweetCount;
+      var $body = $('body');
+      $body.html('');
+      $body.css({'background-color':'#DDFFFF'})
+
+
+      var showTweet = function(index){
+        var tweet = streams.home[index];
+        var $post = $("<div></div>");
+        $post.addClass('posted-'+tweet.user);
+        $post.appendTo($body);
+        $('<br>').appendTo($body);
+        var $user = $("<p></p>");
+        $user.attr('id',"'"+tweet.user+"'");
+        $user.text("@"+tweet.user);
+        $user.appendTo($post);
+        var $message = $("<h2></h2>");
+        $message.text(tweet.message);
+        $message.appendTo($post);
+        var $timestamp = $("<p></p>");
+        $timestamp.text(tweet.created_at.toLocaleString());
+        $timestamp.appendTo($post);
+
+
+        $post.css({'border-radius': '25px',
+                   'border': '10px solid #80CCFF',
+                   'padding': '20px', 
+                   'width': '500px',
+                   'height': '100px'
+                   });
+        $('<br />').prependTo($body);
+        $post.prependTo($body);
+
+      }
+
+      var tweets = function (){
+        var index = tweetCount;
+        while(index >= 0){
+          showTweet(index);
+          index-=1;
+        };
+      }
+
+      var update = function() {
+        setInterval(function() {
+          for (var i = tweetCount + 1; i < streams.home.length - 1; i++) {
+            showTweet(i);
+            tweetCount = i;
+          }
+        }, 5000);
+      };
+
+      var timeline = function (user) {
+
+      }
 
       $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
+        tweets();
+        update();
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
-        }
-
-      });
+      })
 
     </script>
   </body>
